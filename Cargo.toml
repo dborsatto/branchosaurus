@@ -1,0 +1,49 @@
+[workspace]
+resolver = "3"
+members = ["crates/branchosaurus-core", "crates/branchosaurus-ffi", "xtask"]
+default-members = ["crates/branchosaurus-core", "crates/branchosaurus-ffi"]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+# The only toolchain CI builds and tests with (rust-toolchain.toml). Declaring it also keeps
+# Cargo's MSRV-aware resolver from holding dependency updates back.
+rust-version = "1.99"
+license = "GPL-3.0-or-later"
+publish = false
+
+[workspace.dependencies]
+branchosaurus-core = { path = "crates/branchosaurus-core" }
+gix = { version = "0.90", default-features = false }
+thiserror = "2"
+# uniffi-bindgen-cs (for the future Windows app) still targets UniFFI 0.31; its 0.32 upgrade is
+# NordSecurity/uniffi-bindgen-cs#176. Check before starting the Windows app.
+uniffi = "0.32.2"
+tempfile = "3"
+insta = "1"
+notify = { version = "8.2", default-features = false, features = ["macos_fsevent"] }
+trash = { version = "5.2", default-features = false, features = ["coinit_apartmentthreaded"] }
+proptest = "1"
+# Gravatar addresses pictures by the SHA-256 of the author's email.
+sha2 = { version = "0.11.1", default-features = false }
+# Syntax highlighting: syntect is the engine bat and delta use; two-face adds bat's ~200 language
+# definitions (Swift, TypeScript, TOML…), which syntect's built-in set lacks.
+syntect = { version = "5.3", default-features = false, features = ["parsing", "regex-onig", "dump-load"] }
+two-face = { version = "0.5.2", default-features = false, features = ["syntect-onig"] }
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+# UniFFI turns Rust panics into Swift/C# errors, which needs unwinding.
+panic = "unwind"
+lto = "thin"
+codegen-units = 1
+
+[profile.dev.package."*"]
+# Dependencies (gix, zlib) are much faster optimized, and are rarely debugged.
+opt-level = 2

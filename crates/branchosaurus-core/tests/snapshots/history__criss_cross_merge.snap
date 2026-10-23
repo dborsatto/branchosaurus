@@ -1,0 +1,11 @@
+---
+source: crates/branchosaurus-core/tests/history.rs
+expression: graph(&fixture)
+---
+*           main 2 (main)
+| *         other 2 (other)
+* |         merge other 1 into main  [out 0>2]
+| * |       merge main into other  [out 1>0]
+| *         other 1  [in 2>1]
+* |         main 1
+*           base  [in 1>0]

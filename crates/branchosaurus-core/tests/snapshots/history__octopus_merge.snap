@@ -1,0 +1,9 @@
+---
+source: crates/branchosaurus-core/tests/history.rs
+expression: graph(&fixture)
+---
+*           octopus (main)  [out 0>1, out 0>2]
+| | *       topic c (c)
+| * |       topic b (b)
+* | |       topic a (a)
+*           base  [in 1>0, in 2>0]

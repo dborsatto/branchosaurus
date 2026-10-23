@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Run through the Makefile, which sets RUST_VERSION from rust-toolchain.toml and HOST_UID/HOST_GID
+# so files the container writes (cargo fmt) belong to you.
+
+# Fixed, so the volume and containers don't depend on what the checkout's folder is called.
+name: branchosaurus
+
+services:
+  rust:
+    build:
+      context: docker
+      args:
+        RUST_VERSION: ${RUST_VERSION:?run through make, which reads rust-toolchain.toml}
+    image: branchosaurus-rust:${RUST_VERSION}
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      # Registry, build output and home stay in the container, so Linux artifacts never mix with
+      # the macOS ones in ./target.
+      - cache:/cache
+
+volumes:
+  cache:

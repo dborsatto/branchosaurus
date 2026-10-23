@@ -1,0 +1,64 @@
+name: CI
+
+# Every job uses the Rust version pinned in rust-toolchain.toml: Linux through the Docker image
+# (make check), macOS through rustup via the Makefile, Windows through rustup directly.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  linux:
+    name: Linux (Docker)
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lint and test
+        run: make check
+
+  windows:
+    name: Windows
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v7
+      # Installs the toolchain and components pinned in rust-toolchain.toml.
+      - run: rustup toolchain install
+      - uses: Swatinem/rust-cache@v2
+      - name: Lint
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Test
+        run: cargo test --workspace --locked
+
+  macos:
+    name: macOS
+    # Newest generally available macOS image (Xcode 26.6, Swift 6.3); the `-latest` labels lag
+    # behind new images, so runners are named explicitly.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - uses: Swatinem/rust-cache@v2
+      - name: Rust tests
+        run: rustup toolchain install && cargo test --workspace --locked
+      - name: Swift tests
+        run: make macos-test
+      - name: Build universal app
+        run: make macos-release
+      - name: Package
+        run: ditto -c -k --keepParent target/macos/Branchosaurus.app target/macos/Branchosaurus-macOS.zip
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Branchosaurus-macOS
+          path: target/macos/Branchosaurus-macOS.zip
+          if-no-files-found: error

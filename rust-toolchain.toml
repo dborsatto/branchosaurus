@@ -1,0 +1,5 @@
+# The one place the Rust version is defined. rustup (locally and in CI), the Makefile and the
+# Docker image all read it. Change it here and nowhere else.
+[toolchain]
+channel = "1.99.1"
+components = ["rustfmt", "clippy"]

@@ -1,0 +1,7 @@
+---
+source: crates/branchosaurus-core/tests/history.rs
+expression: graph(&fixture)
+---
+*           main 2 (main, light)
+| *         pages root (pages)
+*           main root (v1.0)

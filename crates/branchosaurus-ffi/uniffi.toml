@@ -1,0 +1,6 @@
+[bindings.swift]
+# The generated Swift file is compiled as the `BranchosaurusCore` module and imports the C
+# declarations from the `BranchosaurusFFI` module (apps/macos/Package.swift).
+module_name = "BranchosaurusCore"
+ffi_module_name = "BranchosaurusFFI"
+ffi_module_filename = "branchosaurus_ffiFFI"

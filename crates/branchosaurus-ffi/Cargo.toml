@@ -1,0 +1,28 @@
+[package]
+name = "branchosaurus-ffi"
+description = "UniFFI bindings exposing branchosaurus-core to the Swift and C# shells"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "branchosaurus_ffi"
+# staticlib is linked into the macOS app; cdylib is for the Windows shell.
+crate-type = ["lib", "staticlib", "cdylib"]
+
+[[bin]]
+name = "uniffi-bindgen-swift"
+path = "src/bin/uniffi-bindgen-swift.rs"
+required-features = ["bindgen"]
+
+[features]
+bindgen = ["uniffi/cli"]
+
+[dependencies]
+branchosaurus-core.workspace = true
+uniffi.workspace = true
+
+[lints]
+workspace = true

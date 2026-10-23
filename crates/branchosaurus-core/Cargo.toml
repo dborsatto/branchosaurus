@@ -1,0 +1,39 @@
+[package]
+name = "branchosaurus-core"
+description = "Git engine and UI-ready data models shared by every Branchosaurus shell"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+gix = { workspace = true, features = [
+    "parallel",
+    "max-performance",
+    "basic",
+    "status",
+    "dirwalk",
+    "attributes",
+    "excludes",
+    "sha1",
+] }
+thiserror.workspace = true
+notify.workspace = true
+trash.workspace = true
+syntect.workspace = true
+two-face.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+insta.workspace = true
+proptest.workspace = true
+
+# Started by git (as GIT_ASKPASS / SSH_ASKPASS) to ask the app for credentials.
+[[bin]]
+name = "branchosaurus-askpass"
+path = "src/bin/askpass.rs"
+
+[lints]
+workspace = true
